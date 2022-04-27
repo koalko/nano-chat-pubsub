@@ -1,44 +1,41 @@
 <html>
   <head>
-    <title>WebSocket / notifications playground</title>
+    <title>Nano-chat powered by Redis pub/sub</title>
     <style>
       * {
-        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-          "Lucida Sans", Arial, sans-serif;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
       }
       .chat {
         width: 100%;
-        height: 400px;
+        height: 260px;
+        overflow-y: auto;
+        margin-bottom: 20px;
+      }
+      .msgBox {
+        line-height: 1.2rem;
       }
       .mr4 {
         margin-right: 4px;
+      }
+      .notification {
+        color: lightblue;
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
-    <script
-      crossorigin
-      src="https://unpkg.com/react@17/umd/react.production.min.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
-    ></script>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script>
       const { createElement: e, useState, useEffect } = React;
       let ws = null;
       const wsSend = (payload) => ws && ws.send(JSON.stringify(payload));
 
       const $msg = ({ type, clientId, from, to, message }) => {
-        if (type === "ClientConnected")
-          return e("i", {}, [e("b", {}, clientId), " connected"]);
-        if (type === "ClientDisconnected")
-          return e("i", {}, [e("b", {}, clientId), " disconnected"]);
-        if (type === "PublicMessage")
-          return e("div", {}, [e("b", {}, from), `: ${message}`]);
-        if (type === "PrivateMessage")
-          return e("div", {}, [e("b", {}, from), '→', e("b", {}, to), `: ${message}`]);
+        if (type === "ClientConnected") return e("i", { className: "notification" }, [e("b", {}, clientId), " connected"]);
+        if (type === "ClientDisconnected") return e("i", { className: "notification" }, [e("b", {}, clientId), " disconnected"]);
+        if (type === "PublicMessage") return e("div", {}, [e("b", {}, from), `: ${message}`]);
+        if (type === "PrivateMessage") return e("div", {}, [e("b", {}, from), "→", e("b", {}, to), `: ${message}`]);
         return e("div", {}, "?");
       };
 
@@ -46,7 +43,7 @@
         e(
           "div",
           { class: "chat" },
-          messages.map((message) => e("div", {}, e($msg, message)))
+          messages.map((message) => e("div", { className: "msgBox" }, e($msg, message)))
         );
 
       const $boxChat = ({ userName, messages }) => {
@@ -94,11 +91,7 @@
               e.key === "Enter" && setUserName(name);
             },
           }),
-          e(
-            "button",
-            { class: "ready", onClick: (e) => setUserName(name) },
-            "Ready"
-          ),
+          e("button", { class: "ready", onClick: (e) => setUserName(name) }, "Ready"),
         ]);
       };
 
@@ -116,10 +109,8 @@
         }, [userName]);
 
         return e("div", { class: "app" }, [
-          e("h1", null, "WebSocket / notifications playground"),
-          userName
-            ? e($boxChat, { userName, messages })
-            : e($boxName, { userName, setUserName }),
+          e("h1", null, "Nano-chat powered by Redis pub/sub"),
+          userName ? e($boxChat, { userName, messages }) : e($boxName, { userName, setUserName }),
         ]);
       };
 
