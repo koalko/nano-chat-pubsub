@@ -1,5 +1,5 @@
 const channels = {
-  broadcast: "broadcast",
+  public: "public",
   private: "private",
 };
 
@@ -39,8 +39,8 @@ class Notifications {
     this.listeners[channel] = listener;
   }
 
-  onBroadcast(listener) {
-    this.on(channels.broadcast, listener);
+  onPublic(listener) {
+    this.on(channels.public, listener);
   }
 
   onPrivate(listener) {
@@ -54,8 +54,8 @@ class Notifications {
     this.pubClient.publish(channel, message);
   }
 
-  emitBroadcast(payload) {
-    this.emit(channels.broadcast, payload);
+  emitPublic(payload) {
+    this.emit(channels.public, payload);
   }
 
   emitPrivate(payload) {

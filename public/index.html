@@ -35,7 +35,7 @@
           return e("i", {}, [e("b", {}, clientId), " connected"]);
         if (type === "ClientDisconnected")
           return e("i", {}, [e("b", {}, clientId), " disconnected"]);
-        if (type === "GlobalMessage")
+        if (type === "PublicMessage")
           return e("div", {}, [e("b", {}, from), `: ${message}`]);
         if (type === "PrivateMessage")
           return e("div", {}, [e("b", {}, from), '→', e("b", {}, to), `: ${message}`]);

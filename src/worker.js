@@ -31,14 +31,14 @@ function initWorker() {
   // Better implement in a separate controller
   // Use constants for message types
   wsServer.onConnect((clientId) => {
-    notifications.emitBroadcast({
+    notifications.emitPublic({
       type: "ClientConnected",
       clientId,
     });
   });
 
   wsServer.onDisconnect((clientId) => {
-    notifications.emitBroadcast({
+    notifications.emitPublic({
       type: "ClientDisconnected",
       clientId,
     });
@@ -46,8 +46,8 @@ function initWorker() {
 
   wsServer.onMessage((clientId, payload) => {
     if (payload.to === "*") {
-      notifications.emitBroadcast({
-        type: "GlobalMessage",
+      notifications.emitPublic({
+        type: "PublicMessage",
         from: clientId,
         message: payload.message,
       });
@@ -76,7 +76,7 @@ function initWorker() {
     });
   });
 
-  notifications.onBroadcast((payload) => {
+  notifications.onPublic((payload) => {
     wsServer.broadcast(payload);
   });
   /////////////////////////////////////////////////////////////////////////////////
